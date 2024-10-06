@@ -36,6 +36,7 @@
         .tab-content {
             display: none;
             padding: 20px;
+            text-align: center; /* Center content */
         }
         .tab-content.active {
             display: block;
@@ -49,6 +50,10 @@
             border: 1px solid #ccc;
             margin-top: 20px;
         }
+        .main-image {
+            text-align: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -61,17 +66,24 @@
         <div class="tab" onclick="showTab('stages')">تسجيل الحسابات</div>
         <div class="tab" onclick="showTab('bus-lists')">تسجيل الدرجات</div>
     </div>
+    <div class="main-image">
+        <h2>المساعد الشخصي للمدرسين</h2>
+        <img src="1.png" alt="Main Image" width="300" height="200">
+    </div>
     <div id="classes" class="tab-content">
         <h2>تسجيل الحضور والغياب</h2>
+        <img src="attendance.jpg" alt="Attendance" width="300" height="200">
         <!-- محتوى حصر الفصول -->
         يمكن تسجيل الحضور والغياب بأكثر من طريقة
     </div>
     <div id="stages" class="tab-content">
         <h2>تسجيل الحسابات</h2>
+        <img src="accounts.jpg" alt="Accounts" width="300" height="200">
         <!-- محتوى حصر المراحل -->
     </div>
     <div id="bus-lists" class="tab-content">
         <h2>تسجيل الدرجات</h2>
+        <img src="grades.jpg" alt="Grades" width="300" height="200">
         <form action="upload.php" method="post" enctype="multipart/form-data">
             <input type="file" name="pdf" class="upload-btn" accept="application/pdf">
             <button type="submit">رفع الملف</button>
