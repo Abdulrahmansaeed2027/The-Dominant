@@ -54,11 +54,14 @@
             text-align: center;
             margin: 20px 0;
         }
+        .main-image.hidden, .header.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="logo D.png" alt="Logo" width="50" height="50">
+        <img src="logo D.png" alt="Logo" width="70" height="70">
         <h1>The Dominant Technology</h1>
     </div>
     <div class="tabs">
@@ -73,13 +76,13 @@
     </div>
     <div id="classes" class="tab-content">
         <h2>تسجيل الحضور والغياب</h2>
-        <img src="2.png" alt="Attendance" width="300" height="200">
+        <img src="2.png" alt="Attendance" width="400" height="250">
         <!-- محتوى حصر الفصول -->
         يمكن تسجيل الحضور والغياب بأكثر من طريقة
     </div>
     <div id="stages" class="tab-content">
         <h2>تسجيل الحسابات</h2>
-        <img src="3.png" alt="Accounts" width="300" height="200">
+        <img src="3.png" alt="Accounts" width="400" height="250">
         <!-- محتوى حصر المراحل -->
     </div>
     <div id="bus-lists" class="tab-content">
@@ -97,6 +100,10 @@
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => content.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
+            
+            // إخفاء الصورة والعنوان في الصفحة الرئيسية
+            document.querySelector('.main-image').classList.add('hidden');
+            document.querySelector('.header').classList.add('hidden');
         }
     </script>
 </body>
