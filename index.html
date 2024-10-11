@@ -12,7 +12,7 @@
             background-color: #fff;
         }
         .header {
-            background-color: #00aaff;
+            background-color: #33a1d8;
             color: #fff;
             padding: 20px;
             text-align: center;
@@ -26,84 +26,153 @@
         .tabs {
             display: flex;
             justify-content: space-around;
-            background-color: #f1f1f1;
+            background-color: #d55151;
             padding: 10px 0;
         }
         .tab {
+            color: rgb(255, 255, 255);
             padding: 10px 20px;
             cursor: pointer;
         }
         .tab-content {
             display: none;
             padding: 20px;
-            text-align: center; /* Center content */
+            text-align: center;
         }
         .tab-content.active {
             display: block;
-        }
-        .upload-btn {
-            margin-top: 20px;
-        }
-        .pdf-viewer {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ccc;
-            margin-top: 20px;
         }
         .main-image {
             text-align: center;
             margin: 20px 0;
         }
-        .main-image.hidden, .header.hidden {
-            display: none;
+        .carousel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            height: 300px;
+            position: relative;
         }
+        .carousel img {
+            width: 200px;
+            height: 200px;
+            margin: 0 10px;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        .carousel img.active {
+            opacity: 1;
+        }
+
+
+
     </style>
+
+
+
+
+
+
 </head>
 <body>
     <div class="header">
-        <img src="logo D.png" alt="Logo" width="70" height="70">
+        <img src="H:\Book_Store\image\logo D.png" alt="Logo" width="70" height="70">
         <h1>The Dominant Technology</h1>
     </div>
     <div class="tabs">
-        <div class="tab" onclick="showTab('classes')">تسجيل الحضور والغياب</div>
-        <div class="tab" onclick="showTab('stages')">تسجيل الحسابات</div>
-        <div class="tab" onclick="showTab('bus-lists')">تسجيل الدرجات</div>
+        <div class="tab" onclick="showTab('program-description')">شرح البرنامج</div>
+        <div class="tab" onclick="showTab('reports-forms')">بعض التقارير والنماذج</div>
+        <div class="tab" onclick="showTab('clients')">من عملائنا</div>
+        <div class="tab" onclick="showTab('how-to-buy')">كيفية الشراء</div>
+        <div class="tab" onclick="showTab('Download')">Download</div>
     </div>
+    
+
     <div class="main-image">
         <h2>المساعد الشخصي للمدرسين</h2>
         <img src="1.png" alt="Main Image" width="400" height="250">
         <h2>انضم لأكثر من 10000 معلم يستخدمون المساعد الشخصي للمدرسين</h2>
     </div>
-    <div id="classes" class="tab-content">
-        <h2>تسجيل الحضور والغياب</h2>
-        <img src="2.png" alt="Attendance" width="400" height="250">
-        <!-- محتوى حصر الفصول -->
-        يمكن تسجيل الحضور والغياب بأكثر من طريقة
+
+
+
+
+    <div id="program-description" class="tab-content">
+        <h2>شرح البرنامج</h2>
+        
+<p><strong><span style="font-size: 19px;"><span style="background-color: rgb(61, 142, 185);">يمكنك من خلال البرنامج تسجيل بيانات الطلاب وتسكينهم في مجموعات.. بحيث يسهل عليك بعدها الحصول على قوائم للمجموعات بكل سهولة.. كما يمكنك البحث عن بيانات الطالب والوصول إليها بكل سهولة.</span><br><br><span style="color: rgb(184, 49, 47);">صفحة الحضور..</span></span></strong></p>
+<p><span style="font-size: 18px;"><strong>من خلالها تسطيع تسجيل حضور الطالب بأكثر من طريقة.. <span style="color: rgb(41, 105, 176);">إما عن طريق الاسم</span>.. أو <span style="color: rgb(41, 105, 176);">الكود</span>.. أو <span style="color: rgb(41, 105, 176);">جهاز قارئ الباركود</span>.. ويمكنك طباعة الكروت للطلاب من خلال البرنامج.. وبالطبع تسطيع الحصول على كل التقارير المناسبة لذلك بعد تسجيل البيانات.</strong></span></p>
+<p><span style="font-size: 18px;"><strong><span style="color: rgb(184, 49, 47);">صفحة <strong><span style="font-size: 18px;">الحسابات</span></strong>..</span></strong></span></p>
+<p><span style="font-size: 18px;"><strong>من خلالها تسجل مدفوعات الطالب والمطلوب منه سواء بالحصة أو بالشهر لتتمكن من الحصول على تقارير لكل التفاصيل أو الإجماليات.</strong></span></p>
+<p><span style="font-size: 18px;"><strong><span style="color: rgb(184, 49, 47);">صفحة الشهادات..</span></strong></span></p>
+<p><span style="font-size: 18px;"><strong>من خلالها تستطيع تسجيل درجات الطالب والحصول على كل كشوف الدرجات سواء بالشهر أو اليوم.. وسواء لمجموعة او لطالب.</strong></span></p>
+<p><strong><span style="font-size: 18px;">كما يوجد تقرير شامل به كل الحضور للطالب وكل درجاته خلال الشهر.</span></strong></p>
     </div>
-    <div id="stages" class="tab-content">
-        <h2>تسجيل الحسابات</h2>
-        <img src="3.png" alt="Accounts" width="400" height="250">
-        <!-- محتوى حصر المراحل -->
+    <div id="reports-forms" class="tab-content">
+        <h2>بعض التقارير والنماذج</h2>
+        <p>هنا يمكنك إضافة بعض التقارير والنماذج.</p>
     </div>
-    <div id="bus-lists" class="tab-content">
-        <h2>تسجيل الدرجات</h2>
-        <img src="4.png" alt="Grades" width="300" height="200">
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <input type="file" name="pdf" class="upload-btn" accept="application/pdf">
-            <button type="submit">رفع الملف</button>
-        </form>
-        <iframe id="pdf-viewer" class="pdf-viewer"></iframe>
+    <div id="Download" class="tab-content">
+        
+      
+        
+
+
+<input type="password" id="passwordField" placeholder="أدخل الباسورد">
+<button id="myButton">تحميل من جوجل درايف</button>
+
+<script>
+    document.getElementById("myButton").onclick = function () {
+        var password = document.getElementById("passwordField").value;
+        if (password === "yourpassword") { // استبدل "yourpassword" بالباسورد الصحيح
+            window.location.href = "https://3bdelr7manblog.wordpress.com/";
+        } else {
+            alert("الباسورد غير صحيح تواصل مع الدعم الفني 01205557825");
+        }
+    };
+</script>
+        
+
+
+
+
+        
     </div>
+    <div id="clients" class="tab-content">
+        <h2>من عملائنا</h2>
+        <div class="carousel">
+            <img src="H:\Book_Store\image\12.jpg" alt="Client 1" class="active">
+            <img src="H:\Book_Store\image\13.jpg" alt="Client 2" class="active">
+            <img src="H:\Book_Store\image\14.jpg" alt="Client 3" class="active">
+            <img src="H:\Book_Store\image\15.jpg" alt="Client 3" class="active">
+            <img src="H:\Book_Store\image\16.jpg" alt="Client 3" class="active">
+        </div>
+    </div>
+    <div id="how-to-buy" class="tab-content">
+        <h2>كيفية الشراء</h2>
+        
+<p><span style="background-color: rgb(41, 105, 176); font-size: 20px; color: rgb(255, 255, 255);">✨ كيفية الشراء واستلام البرنامج ✨</span></p>
+<p>____________</p>
+<p><span style="font-size: 20px;">يتم ارسال قيمة البرنامج فودافون كاش على رقم</span></p>
+<p><span style="font-size: 28px; color: rgb(255, 255, 255); background-color: rgb(84, 172, 210);">01009311365</span></p>
+<p><span style="font-size: 28px; color: rgb(255, 255, 255); background-color: rgb(147, 101, 184);">من أي محفظة - أو انستاباي</span><span style="color: rgb(255, 255, 255); background-color: rgb(147, 101, 184);"><br></span></p>
+<p><span style="font-size: 20px;">التكلفة&nbsp;</span><span style="font-size: 26px;">299</span><span style="font-size: 20px;">&nbsp;جنيه.</span></p>
+<p><span style="font-size: 20px;">بنبعت لحضرتك البرنامج على الواتساب بتحمله.. وبنبعتلك برنامج تاني بتسطبه الدعم الفني بيتواصل مع حضرتك من خلاله لتفعيل البرنامج في ٣ دقايق.</span></p>
+    </div>
+    
+
+
 
     <script>
         function showTab(tabId) {
             const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
             document.getElementById(tabId).classList.add('active');
-            
-            // إخفاء الصورة والعنوان في الصفحة الرئيسية
-            document.querySelector('.main-image').classList.add('hidden');
-            document.querySelector('.header').classList.add('hidden');
         }
     </script>
 </body>
