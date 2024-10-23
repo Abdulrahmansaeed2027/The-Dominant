@@ -207,6 +207,8 @@
 <button id="searchButton">بحث</button>
 <div id="result"></div>
 
+
+
 <script>
     let excelData;
 
@@ -221,7 +223,15 @@
 
     document.getElementById('searchButton').onclick = function () {
         const searchTerm = document.getElementById('search').value.toLowerCase();
-        const result = excelData.find(row => row.some(cell => String(cell).toLowerCase().includes(searchTerm)));
+        const columnTitle = 'رقم الأب'; // عنوان العمود المراد البحث فيه
+        const columnIndex = excelData[0].indexOf(columnTitle);
+
+        if (columnIndex === -1) {
+            document.getElementById('result').innerText = "العمود غير موجود";
+            return;
+        }
+
+        const result = excelData.slice(1).find(row => String(row[columnIndex]).toLowerCase().includes(searchTerm));
         
         let resultDiv = document.getElementById('result');
         resultDiv.innerHTML = ''; // مسح النتائج القديمة
@@ -237,6 +247,7 @@
             resultDiv.innerText = "لا يوجد نتائج";
         }
     };
+</script>
 </script>
 
 </body>
