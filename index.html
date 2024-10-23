@@ -183,7 +183,7 @@
         <script>
             let excelData;
         
-            fetch('https://your-server.com/path/to/MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
+            fetch('MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
                 .then(response => response.arrayBuffer())
                 .then(data => {
                     const workbook = XLSX.read(data, {type: 'array'});
