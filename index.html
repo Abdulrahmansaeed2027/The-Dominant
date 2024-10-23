@@ -88,6 +88,7 @@
         <div class="tab" onclick="showTab('clients')">من عملائنا</div>
         <div class="tab" onclick="showTab('how-to-buy')">كيفية الشراء</div>
         <div class="tab" onclick="showTab('Download')">Download</div>
+         <div class="tab" onclick="showTab('Daragty')">درجاتي</div>
     </div>
     
 
@@ -160,7 +161,43 @@
 <p><span style="font-size: 20px;">بنبعت لحضرتك البرنامج على الواتساب بتحمله.. وبنبعتلك برنامج تاني بتسطبه الدعم الفني بيتواصل مع حضرتك من خلاله لتفعيل البرنامج في ٣ دقايق.</span></p>
     </div>
     
+<div id="Daragty" class="tab-content">
+        
 
+
+
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <title>Search Excel File on Server</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+        </head>
+        <body>
+        
+        <input type="text" id="search" placeholder="ابحث هنا">
+        <button id="searchButton">بحث</button>
+        <div id="result"></div>
+        
+        <script>
+            let excelData;
+        
+            fetch('https://your-server.com/path/to/MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                });
+        
+            document.getElementById('searchButton').onclick = function () {
+                const searchTerm = document.getElementById('search').value.toLowerCase();
+                const result = excelData.find(row => row.some(cell => String(cell).toLowerCase().includes(searchTerm)));
+                document.getElementById('result').innerText = result ? JSON.stringify(result) : "لا يوجد نتائج";
+            };
+        </script>
 
 
     <script>
