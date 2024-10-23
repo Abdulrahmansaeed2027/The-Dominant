@@ -211,10 +211,12 @@
 
 
 
+
+
 <script>
     let excelData;
 
-    fetch('MM.xls') // استبدل الرابط برابط الملف الخاص بك
+    fetch('MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
         .then(response => response.arrayBuffer())
         .then(data => {
             const workbook = XLSX.read(data, {type: 'array'});
@@ -227,8 +229,9 @@
         const searchTerm = document.getElementById('search').value.toLowerCase();
         const columnTitle = 'رقم الأب'; // عنوان العمود المراد البحث فيه
         const columnIndex = excelData[0].indexOf(columnTitle);
+        const teacherColumnIndex = excelData[0].indexOf('اسم المدرس'); // عمود اسم المدرس
 
-        if (columnIndex === -1) {
+        if (columnIndex === -1 || teacherColumnIndex === -1) {
             document.getElementById('result').innerText = "العمود غير موجود";
             return;
         }
@@ -236,9 +239,14 @@
         const result = excelData.slice(1).find(row => String(row[columnIndex]).toLowerCase().includes(searchTerm));
         
         let resultDiv = document.getElementById('result');
+        let teacherHeaderDiv = document.getElementById('teacherHeader');
         resultDiv.innerHTML = ''; // مسح النتائج القديمة
+        teacherHeaderDiv.innerHTML = ''; // مسح عنوان المدرس القديم
 
         if (result) {
+            let teacherName = result[teacherColumnIndex]; // اسم المدرس
+            teacherHeaderDiv.innerHTML = `<div class="teacher-name">${teacherName}</div>`;
+
             let table = '<table><tr>';
             excelData[0].forEach(header => {
                 table += `<th>${header}</th>`;
