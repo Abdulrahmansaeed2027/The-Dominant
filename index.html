@@ -167,37 +167,81 @@
 
 
 
+        
         <!DOCTYPE html>
-        <html lang="en">
-        <head>
-        <meta charset="UTF-8">
-        <title>Search Excel File on Server</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-        </head>
-        <body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search Excel File with Colored Results</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #ddd;
+    }
+    th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+    }
+    .highlight {
+        background-color: yellow;
+    }
+</style>
+</head>
+<body>
+
+<input type="text" id="search" placeholder="ابحث هنا">
+<button id="searchButton">بحث</button>
+<div id="result"></div>
+
+<script>
+    let excelData;
+
+    fetch('MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, {type: 'array'});
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+        });
+
+    document.getElementById('searchButton').onclick = function () {
+        const searchTerm = document.getElementById('search').value.toLowerCase();
+        const result = excelData.find(row => row.some(cell => String(cell).toLowerCase().includes(searchTerm)));
         
-        <input type="text" id="search" placeholder="ابحث هنا">
-        <button id="searchButton">بحث</button>
-        <div id="result"></div>
-        
-        <script>
-            let excelData;
-        
-            fetch('MM.xlsx') // استبدل الرابط برابط الملف الخاص بك
-                .then(response => response.arrayBuffer())
-                .then(data => {
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                });
-        
-            document.getElementById('searchButton').onclick = function () {
-                const searchTerm = document.getElementById('search').value.toLowerCase();
-                const result = excelData.find(row => row.some(cell => String(cell).toLowerCase().includes(searchTerm)));
-                document.getElementById('result').innerText = result ? JSON.stringify(result) : "لا يوجد نتائج";
-            };
-        </script>
+        let resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = ''; // مسح النتائج القديمة
+
+        if (result) {
+            let table = '<table><tr>';
+            result.forEach(cell => {
+                table += `<td class="highlight">${cell}</td>`;
+            });
+            table += '</tr></table>';
+            resultDiv.innerHTML = table;
+        } else {
+            resultDiv.innerText = "لا يوجد نتائج";
+        }
+    };
+</script>
+
+</body>
+</html>
+
 
 
     <script>
