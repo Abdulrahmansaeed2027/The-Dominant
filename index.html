@@ -167,12 +167,6 @@
 
 
 
-        
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Search Excel File with Colored Results</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 <style>
     table {
@@ -199,19 +193,19 @@
     .highlight {
         background-color: yellow;
     }
+    .teacher-name {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
 </style>
 </head>
 <body>
 
 <input type="text" id="search" placeholder="ابحث هنا">
 <button id="searchButton">بحث</button>
+<div id="teacherHeader"></div>
 <div id="result"></div>
-
-
-
-
-
-
 
 <script>
     let excelData;
@@ -263,9 +257,13 @@
     };
 </script>
 
-</body>
-</html>
 
+
+
+
+
+
+  </div>
 
 
     <script>
