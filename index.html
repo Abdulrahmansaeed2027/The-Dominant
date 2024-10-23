@@ -243,25 +243,31 @@
             let teacherName = results[0][teacherColumnIndex]; // اسم المدرس
             teacherHeaderDiv.innerHTML = `<div class="teacher-name">${teacherName}</div>`;
 
-            results.forEach(result => {
-                let table = '<table><tr>';
-                excelData[0].forEach(header => {
+            let table = '<table><tr>';
+            excelData[0].forEach((header, index) => {
+                if (index !== teacherColumnIndex) {
                     table += `<th>${header}</th>`;
-                });
-                table += '</tr><tr>';
-                result.forEach(cell => {
-                    table += `<td class="highlight">${cell}</td>`;
-                });
-                table += '</tr></table>';
-                resultDiv.innerHTML += table;
+                }
             });
+            table += '</tr>';
+
+            results.forEach(result => {
+                table += '<tr>';
+                result.forEach((cell, index) => {
+                    if (index !== teacherColumnIndex) {
+                        table += `<td class="highlight">${cell}</td>`;
+                    }
+                });
+                table += '</tr>';
+            });
+
+            table += '</table>';
+            resultDiv.innerHTML = table;
         } else {
             resultDiv.innerText = "لا يوجد نتائج";
         }
     };
 </script>
-
-
 
 
 
