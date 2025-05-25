@@ -161,18 +161,9 @@
             text-align: center;
         }
 
-        .person-image-cell {
-            width: 70px;
-            text-align: center;
-        }
+        
 
-        .person-thumbnail {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #3498db;
-        }
+        
 
         /* Modal Styles */
         .modal {
@@ -330,10 +321,7 @@
                 padding: 15px;
             }
             
-            .person-thumbnail {
-                width: 30px;
-                height: 30px;
-            }
+            
         }
     </style>
 </head>
@@ -364,11 +352,7 @@
                 <h2 id="personModalTitle">إضافة شخص جديد</h2>
                 <form id="personForm">
                     <input type="hidden" id="personId">
-                    <div class="image-upload-container">
-                        <img id="personImagePreview" src="https://via.placeholder.com/100" alt="صورة الشخص" class="person-image-preview">
-                        <label for="personImage" class="image-upload-label">اختر صورة</label>
-                        <input type="file" id="personImage" accept="image/*">
-                    </div>
+                    
                     <div class="form-group">
                         <label for="newPersonName">اسم الشخص:</label>
                         <input type="text" id="newPersonName" required>
@@ -426,7 +410,7 @@
             <thead>
                 <tr>
                     <th>مسلسل</th>
-                    <th class="person-image-cell">الصورة</th>
+                    
                     <th>اسم الشخص</th>
                     <th>المناسبة</th>
                     <th>التاريخ</th>
@@ -540,7 +524,7 @@ firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${index + 1}</td>
-                        <td class="person-image-cell"><img src="${personImageSrc}" alt="${personName}" class="person-thumbnail"></td>
+                        
                         <td>${personName}</td>
                         <td>${event.name}</td>
                         <td>${formatDate(eventDate)}</td>
@@ -754,7 +738,15 @@ firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
                     return;
                 }
                 
-                if (confirm('هل أنت متأكد من حذف المناسبات المحددة؟')) {
+                
+if (confirm('هل أنت متأكد من حذف المناسبات المحددة؟')) {
+    const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.dataset.id);
+    idsToDelete.forEach(id => firebaseDB.deleteEvent(id));
+    events = events.filter(event => !idsToDelete.includes(event.id));
+    renderEvents(searchInput.value);
+    selectAllCheckbox.checked = false;
+}
+
                     const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.dataset.id);
                     events = events.filter(event => !idsToDelete.includes(event.id));
                     firebaseDB.saveEvent(events[events.length - 1]);
@@ -992,6 +984,11 @@ firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
     savePerson: (person) => {
       return set(ref(db, 'names/' + person.id), person);
     },
+    
+    deleteEvent: (id) => {
+      return set(ref(db, 'event/' + id), null);
+    },
+
     saveEvent: (event) => {
       return set(ref(db, 'event/' + event.id), event);
     },
