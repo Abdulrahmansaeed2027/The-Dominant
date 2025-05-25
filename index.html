@@ -471,14 +471,16 @@
             const personImagePreview = document.getElementById('personImagePreview');
             
             // متغيرات التطبيق
-            let events = JSON.parse(localStorage.getItem('importantDates')) || [];
-            let persons = JSON.parse(localStorage.getItem('importantPersons')) || [];
+            let events = [];
+            let persons = [];
             let editMode = false;
             let currentEditId = null;
             let currentExportType = null;
             let currentPersonImage = null;
             
             // تهيئة التطبيق
+firebaseDB.loadPersons().then(data => { persons = data; renderPersonSelect(); renderEvents(); });
+firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
             function initApp() {
                 renderEvents();
                 renderPersonSelect();
@@ -699,7 +701,7 @@
                     events.push(newEvent);
                 }
                 
-                localStorage.setItem('importantDates', JSON.stringify(events));
+                firebaseDB.saveEvent(events[events.length - 1]);
                 renderEvents(searchInput.value);
                 closeModal();
             }
@@ -738,7 +740,7 @@
                     persons.push(newPerson);
                 }
                 
-                localStorage.setItem('importantPersons', JSON.stringify(persons));
+                firebaseDB.savePerson(persons[persons.length - 1]);
                 renderPersonSelect();
                 renderEvents(searchInput.value);
                 closeModal();
@@ -755,7 +757,7 @@
                 if (confirm('هل أنت متأكد من حذف المناسبات المحددة؟')) {
                     const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.dataset.id);
                     events = events.filter(event => !idsToDelete.includes(event.id));
-                    localStorage.setItem('importantDates', JSON.stringify(events));
+                    firebaseDB.saveEvent(events[events.length - 1]);
                     renderEvents(searchInput.value);
                     selectAllCheckbox.checked = false;
                 }
@@ -967,8 +969,42 @@
             });
             
             // تهيئة التطبيق
+firebaseDB.loadPersons().then(data => { persons = data; renderPersonSelect(); renderEvents(); });
+firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
             initApp();
         });
     </script>
+
+<!-- Firebase SDK -->
+<script type="module">
+  // إعداد Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, push, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    databaseURL: "https://date-f5707-default-rtdb.firebaseio.com/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.firebaseDB = {
+    savePerson: (person) => {
+      return set(ref(db, 'names/' + person.id), person);
+    },
+    saveEvent: (event) => {
+      return set(ref(db, 'event/' + event.id), event);
+    },
+    loadPersons: async () => {
+      const snapshot = await get(child(ref(db), 'names'));
+      return snapshot.exists() ? Object.values(snapshot.val()) : [];
+    },
+    loadEvents: async () => {
+      const snapshot = await get(child(ref(db), 'event'));
+      return snapshot.exists() ? Object.values(snapshot.val()) : [];
+    }
+  };
+</script>
+
 </body>
 </html>
