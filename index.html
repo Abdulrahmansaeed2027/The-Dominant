@@ -421,6 +421,14 @@
             // تهيئة التطبيق
             
             function initApp() {
+ 
+
+                if (!window.firebaseDB) {
+    console.error('FirebaseDB is not available yet');
+    setTimeout(initApp, 500); // إعادة المحاولة بعد نصف ثانية
+    return;
+  }
+
   firebaseDB.loadPersons().then(data => {
     persons = data;
     renderPersonSelect();
@@ -903,6 +911,7 @@
     </script>
 
 <!-- Firebase SDK -->
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -914,7 +923,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // تعريف الكائن بشكل صحيح
+  // تعريف الكائن بشكل صحيح مع تصحيح الأقواس
   const firebaseDB = {
     savePerson: (person) => {
       return set(ref(db, 'names/' + person.id), person);
@@ -932,18 +941,20 @@
       return remove(ref(db, 'event/' + id));
     },
     loadPersons: async () => {
-      const snapshot = await get(child(ref(db), 'names');
+      const snapshot = await get(child(ref(db), 'names'));
       return snapshot.exists() ? Object.values(snapshot.val()) : [];
     },
     loadEvents: async () => {
-      const snapshot = await get(child(ref(db), 'event');
+      const snapshot = await get(child(ref(db), 'event'));
       return snapshot.exists() ? Object.values(snapshot.val()) : [];
     }
   };
 
-  // جعل الكائن متاحًا عالميًا
+  // جعل الكائن متاحًا عالميًا بعد التأكد من تحميله
   window.firebaseDB = firebaseDB;
+  console.log('FirebaseDB initialized successfully'); // للتأكد من التحميل
 </script>
+
 
 </body>
 </html>
