@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة التواريخ المهمة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background-color: #d35400;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+            font-family: 'Arial', sans-serif;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+
+        .person-image-cell {
+            width: 70px;
+            text-align: center;
+        }
+
+        .person-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #3498db;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 25px;
+            border: none;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: modalopen 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .close {
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .person-image-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px auto;
+            display: block;
+            border: 3px solid #3498db;
+        }
+
+        .image-upload-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .image-upload-label {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload-label:hover {
+            background-color: #2980b9;
+        }
+
+        #personImage {
+            display: none;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 10px center;
+            background-size: 15px;
+            padding-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 15px;
+            }
+            
+            .person-thumbnail {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="لوجو الموقع" class="logo" id="siteLogo">
+            <h1>قائمة التواريخ المهمة</h1>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="ابحث في المناسبات...">
+        </div>
+        
+        <div class="controls">
+            <button id="addPersonBtn" class="btn btn-warning"><i class="fas fa-user-plus"></i> إضافة شخص</button>
+            <button id="addBtn" class="btn"><i class="fas fa-plus"></i> إضافة مناسبة</button>
+            <button id="editBtn" class="btn"><i class="fas fa-edit"></i> تعديل</button>
+            <button id="deleteBtn" class="btn btn-danger"><i class="fas fa-trash"></i> حذف</button>
+            <button id="exportPdfBtn" class="btn btn-success"><i class="fas fa-file-pdf"></i> تصدير PDF</button>
+            <button id="exportExcelBtn" class="btn btn-success"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+        </div>
+        
+        <!-- نافذة إضافة شخص -->
+        <div class="modal" id="personModal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="personModalTitle">إضافة شخص جديد</h2>
+                <form id="personForm">
+                    <input type="hidden" id="personId">
+                    <div class="image-upload-container">
+                        <img id="personImagePreview" src="https://via.placeholder.com/100" alt="صورة الشخص" class="person-image-preview">
+                        <label for="personImage" class="image-upload-label">اختر صورة</label>
+                        <input type="file" id="personImage" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPersonName">اسم الشخص:</label>
+                        <input type="text" id="newPersonName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="personNotes">ملاحظات:</label>
+                        <textarea id="personNotes"></textarea>
+                    </div>
+                    <button type="submit" class="btn">حفظ</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- نافذة إضافة/تعديل مناسبة -->
+        <div class="modal" id="eventModal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">إضافة مناسبة جديدة</h2>
+                <form id="eventForm">
+                    <input type="hidden" id="eventId">
+                    <div class="form-group">
+                        <label for="personSelect">اختر الشخص:</label>
+                        <select id="personSelect" required>
+                            <option value="">-- اختر شخص --</option>
+                            <!-- سيتم ملؤها بواسطة JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventName">اسم المناسبة:</label>
+                        <input type="text" id="eventName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">تاريخ المناسبة:</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <button type="submit" class="btn">حفظ</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- نافذة التصدير -->
+        <div class="modal" id="exportModal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="exportModalTitle">تصدير المناسبات</h2>
+                <p>الرجاء تحديد المناسبات التي تريد تصديرها:</p>
+                <div id="exportEventsList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+                <button id="confirmExportBtn" class="btn btn-success">تصدير المحدد</button>
+            </div>
+        </div>
+        
+        <table id="eventsTable">
+            <thead>
+                <tr>
+                    <th>مسلسل</th>
+                    <th class="person-image-cell">الصورة</th>
+                    <th>اسم الشخص</th>
+                    <th>المناسبة</th>
+                    <th>التاريخ</th>
+                    <th>الأيام المتبقية</th>
+                    <th>السنوات السابقة</th>
+                    <th class="checkbox-cell"><input type="checkbox" id="selectAll"></th>
+                </tr>
+            </thead>
+            <tbody id="eventsList">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // تهيئة jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // عناصر DOM
+            const eventsList = document.getElementById('eventsList');
+            const addBtn = document.getElementById('addBtn');
+            const addPersonBtn = document.getElementById('addPersonBtn');
+            const editBtn = document.getElementById('editBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+            const exportExcelBtn = document.getElementById('exportExcelBtn');
+            const eventModal = document.getElementById('eventModal');
+            const personModal = document.getElementById('personModal');
+            const exportModal = document.getElementById('exportModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const personModalTitle = document.getElementById('personModalTitle');
+            const eventForm = document.getElementById('eventForm');
+            const personForm = document.getElementById('personForm');
+            const closeBtns = document.querySelectorAll('.close');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const searchInput = document.getElementById('searchInput');
+            const exportEventsList = document.getElementById('exportEventsList');
+            const confirmExportBtn = document.getElementById('confirmExportBtn');
+            const personSelect = document.getElementById('personSelect');
+            const personImage = document.getElementById('personImage');
+            const personImagePreview = document.getElementById('personImagePreview');
+            
+            // متغيرات التطبيق
+            let events = JSON.parse(localStorage.getItem('importantDates')) || [];
+            let persons = JSON.parse(localStorage.getItem('importantPersons')) || [];
+            let editMode = false;
+            let currentEditId = null;
+            let currentExportType = null;
+            let currentPersonImage = null;
+            
+            // تهيئة التطبيق
+            function initApp() {
+                renderEvents();
+                renderPersonSelect();
+            }
+            
+            // عرض الأحداث في الجدول
+            function renderEvents(filterText = '') {
+                eventsList.innerHTML = '';
+                
+                if (events.length === 0) {
+                    eventsList.innerHTML = '<tr><td colspan="8" style="text-align: center;">لا توجد مناسبات مضافة</td></tr>';
+                    return;
+                }
+                
+                let filteredEvents = events;
+                if (filterText) {
+                    const searchText = filterText.toLowerCase();
+                    filteredEvents = events.filter(event => {
+                        const person = persons.find(p => p.id === event.personId);
+                        return (
+                            (person && person.name.toLowerCase().includes(searchText)) ||
+                            event.name.toLowerCase().includes(searchText) ||
+                            event.date.toLowerCase().includes(searchText)
+                        );
+                    });
+                }
+                
+                filteredEvents.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateA - dateB;
+                });
+                
+                filteredEvents.forEach((event, index) => {
+                    const person = persons.find(p => p.id === event.personId);
+                    const personName = person ? person.name : 'غير معروف';
+                    const personImageSrc = person && person.image ? person.image : 'https://via.placeholder.com/40';
+                    
+                    const eventDate = new Date(event.date);
+                    const today = new Date();
+                    const currentYear = today.getFullYear();
+                    const eventThisYear = new Date(eventDate);
+                    eventThisYear.setFullYear(currentYear);
+                    
+                    // حساب الأيام المتبقية
+                    let daysRemaining;
+                    if (eventThisYear < today) {
+                        eventThisYear.setFullYear(currentYear + 1);
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    } else {
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    }
+                    
+                    // حساب السنوات السابقة
+                    const yearsPassed = currentYear - eventDate.getFullYear();
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td class="person-image-cell"><img src="${personImageSrc}" alt="${personName}" class="person-thumbnail"></td>
+                        <td>${personName}</td>
+                        <td>${event.name}</td>
+                        <td>${formatDate(eventDate)}</td>
+                        <td>${daysRemaining} يوم</td>
+                        <td>${yearsPassed} سنة</td>
+                        <td class="checkbox-cell"><input type="checkbox" class="event-checkbox" data-id="${event.id}"></td>
+                    `;
+                    
+                    // تناوب ألوان الصفوف
+                    if (index % 2 === 0) {
+                        row.style.backgroundColor = '#ffffff';
+                    } else {
+                        row.style.backgroundColor = '#f9f9f9';
+                    }
+                    
+                    eventsList.appendChild(row);
+                });
+            }
+            
+            // عرض الأشخاص في dropdown
+            function renderPersonSelect() {
+                personSelect.innerHTML = '<option value="">-- اختر شخص --</option>';
+                persons.forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person.id;
+                    option.textContent = person.name;
+                    personSelect.appendChild(option);
+                });
+            }
+            
+            // تنسيق التاريخ
+            function formatDate(date) {
+                const day = date.getDate();
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            
+            // فتح نافذة إضافة/تعديل مناسبة
+            function openEventModal(title, isEdit = false, eventData = null) {
+                modalTitle.textContent = title;
+                editMode = isEdit;
+                
+                if (isEdit && eventData) {
+                    document.getElementById('eventId').value = eventData.id;
+                    personSelect.value = eventData.personId;
+                    document.getElementById('eventName').value = eventData.name;
+                    document.getElementById('eventDate').value = eventData.date.split('T')[0];
+                    currentEditId = eventData.id;
+                } else {
+                    eventForm.reset();
+                    currentEditId = null;
+                }
+                
+                eventModal.style.display = 'block';
+            }
+            
+            // فتح نافذة إضافة/تعديل شخص
+            function openPersonModal(title, isEdit = false, personData = null) {
+                personModalTitle.textContent = title;
+                editMode = isEdit;
+                
+                if (isEdit && personData) {
+                    document.getElementById('personId').value = personData.id;
+                    document.getElementById('newPersonName').value = personData.name;
+                    document.getElementById('personNotes').value = personData.notes || '';
+                    
+                    if (personData.image) {
+                        personImagePreview.src = personData.image;
+                        currentPersonImage = personData.image;
+                    } else {
+                        personImagePreview.src = 'https://via.placeholder.com/100';
+                        currentPersonImage = null;
+                    }
+                    
+                    currentEditId = personData.id;
+                } else {
+                    personForm.reset();
+                    personImagePreview.src = 'https://via.placeholder.com/100';
+                    currentPersonImage = null;
+                    currentEditId = null;
+                }
+                
+                personModal.style.display = 'block';
+            }
+            
+            // فتح نافذة التصدير
+            function openExportModal(type) {
+                currentExportType = type;
+                const title = type === 'pdf' ? 'تصدير إلى PDF' : 'تصدير إلى Excel';
+                document.getElementById('exportModalTitle').textContent = title;
+                
+                // ملء قائمة المناسبات للتصدير
+                exportEventsList.innerHTML = '';
+                events.forEach(event => {
+                    const person = persons.find(p => p.id === event.personId);
+                    const personName = person ? person.name : 'غير معروف';
+                    const eventDate = new Date(event.date);
+                    
+                    const div = document.createElement('div');
+                    div.style.padding = '10px';
+                    div.style.borderBottom = '1px solid #eee';
+                    div.style.display = 'flex';
+                    div.style.alignItems = 'center';
+                    div.style.gap = '10px';
+                    div.innerHTML = `
+                        <input type="checkbox" class="export-checkbox" data-id="${event.id}" checked>
+                        <div>
+                            <div style="font-weight: bold;">${personName} - ${event.name}</div>
+                            <div style="font-size: 0.9em; color: #666;">${formatDate(eventDate)}</div>
+                        </div>
+                    `;
+                    exportEventsList.appendChild(div);
+                });
+                
+                exportModal.style.display = 'block';
+            }
+            
+            // إغلاق النوافذ المنبثقة
+            function closeModal() {
+                eventModal.style.display = 'none';
+                personModal.style.display = 'none';
+                exportModal.style.display = 'none';
+            }
+            
+            // حفظ المناسبة
+            function saveEvent(event) {
+                event.preventDefault();
+                
+                const personId = personSelect.value;
+                const eventName = document.getElementById('eventName').value;
+                const eventDate = document.getElementById('eventDate').value;
+                
+                if (!personId) {
+                    alert('الرجاء اختيار شخص');
+                    return;
+                }
+                
+                if (editMode && currentEditId) {
+                    // تعديل المناسبة الموجودة
+                    const eventIndex = events.findIndex(e => e.id === currentEditId);
+                    if (eventIndex !== -1) {
+                        events[eventIndex] = {
+                            id: currentEditId,
+                            personId: personId,
+                            name: eventName,
+                            date: eventDate
+                        };
+                    }
+                } else {
+                    // إضافة مناسبة جديدة
+                    const newEvent = {
+                        id: Date.now().toString(),
+                        personId: personId,
+                        name: eventName,
+                        date: eventDate
+                    };
+                    events.push(newEvent);
+                }
+                
+                localStorage.setItem('importantDates', JSON.stringify(events));
+                renderEvents(searchInput.value);
+                closeModal();
+            }
+            
+            // حفظ الشخص
+            function savePerson(event) {
+                event.preventDefault();
+                
+                const personName = document.getElementById('newPersonName').value;
+                const personNotes = document.getElementById('personNotes').value;
+                
+                if (!personName) {
+                    alert('الرجاء إدخال اسم الشخص');
+                    return;
+                }
+                
+                if (editMode && currentEditId) {
+                    // تعديل الشخص الموجود
+                    const personIndex = persons.findIndex(p => p.id === currentEditId);
+                    if (personIndex !== -1) {
+                        persons[personIndex] = {
+                            id: currentEditId,
+                            name: personName,
+                            notes: personNotes,
+                            image: currentPersonImage || persons[personIndex].image || null
+                        };
+                    }
+                } else {
+                    // إضافة شخص جديد
+                    const newPerson = {
+                        id: Date.now().toString(),
+                        name: personName,
+                        notes: personNotes,
+                        image: currentPersonImage || null
+                    };
+                    persons.push(newPerson);
+                }
+                
+                localStorage.setItem('importantPersons', JSON.stringify(persons));
+                renderPersonSelect();
+                renderEvents(searchInput.value);
+                closeModal();
+            }
+            
+            // حذف الأحداث المحددة
+            function deleteSelectedEvents() {
+                const checkboxes = document.querySelectorAll('.event-checkbox:checked');
+                if (checkboxes.length === 0) {
+                    alert('الرجاء تحديد مناسبة واحدة على الأقل للحذف');
+                    return;
+                }
+                
+                if (confirm('هل أنت متأكد من حذف المناسبات المحددة؟')) {
+                    const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.dataset.id);
+                    events = events.filter(event => !idsToDelete.includes(event.id));
+                    localStorage.setItem('importantDates', JSON.stringify(events));
+                    renderEvents(searchInput.value);
+                    selectAllCheckbox.checked = false;
+                }
+            }
+            
+            // تعديل الأحداث المحددة
+            function editSelectedEvent() {
+                const checkboxes = document.querySelectorAll('.event-checkbox:checked');
+                if (checkboxes.length !== 1) {
+                    alert('الرجاء تحديد مناسبة واحدة فقط للتعديل');
+                    return;
+                }
+                
+                const eventId = checkboxes[0].dataset.id;
+                const eventToEdit = events.find(event => event.id === eventId);
+                
+                if (eventToEdit) {
+                    openEventModal('تعديل المناسبة', true, eventToEdit);
+                }
+            }
+            
+            // تصدير إلى PDF مع دعم العربية
+            function exportToPdf(selectedIds) {
+                const selectedEvents = events.filter(event => selectedIds.includes(event.id));
+                
+                const doc = new jsPDF();
+                
+                // إضافة خط يدعم العربية
+                doc.addFont('https://cdn.jsdelivr.net/gh/arabic-fonts/arabic-fonts@master/fonts/Amiri/Amiri-Regular.ttf', 'Amiri', 'normal');
+                doc.setFont('Amiri');
+                
+                doc.setFontSize(18);
+                doc.text('قائمة التواريخ المهمة', 105, 15, { align: 'center' });
+                
+                // إضافة التاريخ والوقت الحالي
+                doc.setFontSize(10);
+                const now = new Date();
+                doc.text(`تم التصدير في: ${now.toLocaleString()}`, 105, 25, { align: 'center' });
+                
+                // إضافة البيانات
+                doc.setFontSize(12);
+                let y = 40;
+                
+                // عنوان الجدول
+                doc.setFillColor(52, 152, 219);
+                doc.setTextColor(255, 255, 255);
+                doc.rect(10, y, 190, 10, 'F');
+                doc.text('مسلسل', 195, y + 7, { align: 'right' });
+                doc.text('اسم الشخص', 170, y + 7, { align: 'right' });
+                doc.text('المناسبة', 130, y + 7, { align: 'right' });
+                doc.text('التاريخ', 100, y + 7, { align: 'right' });
+                doc.text('الأيام المتبقية', 70, y + 7, { align: 'right' });
+                doc.text('السنوات السابقة', 40, y + 7, { align: 'right' });
+                
+                y += 10;
+                doc.setTextColor(0, 0, 0);
+                
+                // بيانات الجدول
+                selectedEvents.forEach((event, index) => {
+                    const person = persons.find(p => p.id === event.personId);
+                    const personName = person ? person.name : 'غير معروف';
+                    
+                    const eventDate = new Date(event.date);
+                    const today = new Date();
+                    const currentYear = today.getFullYear();
+                    const eventThisYear = new Date(eventDate);
+                    eventThisYear.setFullYear(currentYear);
+                    
+                    let daysRemaining;
+                    if (eventThisYear < today) {
+                        eventThisYear.setFullYear(currentYear + 1);
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    } else {
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    }
+                    
+                    const yearsPassed = currentYear - eventDate.getFullYear();
+                    
+                    doc.text((index + 1).toString(), 195, y + 7, { align: 'right' });
+                    doc.text(personName, 170, y + 7, { align: 'right' });
+                    doc.text(event.name, 130, y + 7, { align: 'right' });
+                    doc.text(formatDate(eventDate), 100, y + 7, { align: 'right' });
+                    doc.text(daysRemaining.toString(), 70, y + 7, { align: 'right' });
+                    doc.text(yearsPassed.toString(), 40, y + 7, { align: 'right' });
+                    
+                    y += 10;
+                    
+                    // إضافة صفحة جديدة إذا لزم الأمر
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                });
+                
+                doc.save('التواريخ_المهمة.pdf');
+            }
+            
+            // تصدير إلى Excel
+            function exportToExcel(selectedIds) {
+                const selectedEvents = events.filter(event => selectedIds.includes(event.id));
+                
+                const data = selectedEvents.map(event => {
+                    const person = persons.find(p => p.id === event.personId);
+                    const personName = person ? person.name : 'غير معروف';
+                    
+                    const eventDate = new Date(event.date);
+                    const today = new Date();
+                    const currentYear = today.getFullYear();
+                    const eventThisYear = new Date(eventDate);
+                    eventThisYear.setFullYear(currentYear);
+                    
+                    let daysRemaining;
+                    if (eventThisYear < today) {
+                        eventThisYear.setFullYear(currentYear + 1);
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    } else {
+                        daysRemaining = Math.ceil((eventThisYear - today) / (1000 * 60 * 60 * 24));
+                    }
+                    
+                    const yearsPassed = currentYear - eventDate.getFullYear();
+                    
+                    return {
+                        'اسم الشخص': personName,
+                        'المناسبة': event.name,
+                        'التاريخ': formatDate(eventDate),
+                        'الأيام المتبقية': daysRemaining,
+                        'السنوات السابقة': yearsPassed
+                    };
+                });
+                
+                const worksheet = XLSX.utils.json_to_sheet(data);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "التواريخ المهمة");
+                XLSX.writeFile(workbook, "التواريخ_المهمة.xlsx");
+            }
+            
+            // معالجة تحميل صورة الشخص
+            personImage.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        personImagePreview.src = event.target.result;
+                        currentPersonImage = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // أحداث المستخدم
+            addBtn.addEventListener('click', () => {
+                if (persons.length === 0) {
+                    alert('لا يوجد أشخاص مضافين. الرجاء إضافة شخص أولاً');
+                    openPersonModal('إضافة شخص جديد');
+                } else {
+                    openEventModal('إضافة مناسبة جديدة');
+                }
+            });
+            
+            addPersonBtn.addEventListener('click', () => openPersonModal('إضافة شخص جديد'));
+            closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+            window.addEventListener('click', (e) => {
+                if (e.target === eventModal || e.target === personModal || e.target === exportModal) {
+                    closeModal();
+                }
+            });
+            eventForm.addEventListener('submit', saveEvent);
+            personForm.addEventListener('submit', savePerson);
+            deleteBtn.addEventListener('click', deleteSelectedEvents);
+            editBtn.addEventListener('click', editSelectedEvent);
+            exportPdfBtn.addEventListener('click', () => openExportModal('pdf'));
+            exportExcelBtn.addEventListener('click', () => openExportModal('excel'));
+            
+            // البحث
+            searchInput.addEventListener('input', () => {
+                renderEvents(searchInput.value);
+            });
+            
+            // تحديد/إلغاء تحديد الكل
+            selectAllCheckbox.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.event-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            });
+            
+            // تأكيد التصدير
+            confirmExportBtn.addEventListener('click', function() {
+                const checkboxes = document.querySelectorAll('.export-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.dataset.id);
+                
+                if (selectedIds.length === 0) {
+                    alert('الرجاء تحديد مناسبة واحدة على الأقل للتصدير');
+                    return;
+                }
+                
+                closeModal();
+                
+                if (currentExportType === 'pdf') {
+                    exportToPdf(selectedIds);
+                } else {
+                    exportToExcel(selectedIds);
+                }
+            });
+            
+            // معالجة صورة اللوجو إذا لم توجد
+            document.getElementById('siteLogo').addEventListener('error', function() {
+                this.style.display = 'none';
+            });
+            
+            // تهيئة التطبيق
+            initApp();
+        });
+    </script>
+</body>
+</html>
