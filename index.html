@@ -908,30 +908,29 @@
 
   window.firebaseDB = {
     savePerson: (person) => {
-      return set(ref(db, 'persons/' + person.id), person);
+      return set(ref(db, 'names/' + person.id), person);
     },
     updatePerson: (person) => {
-      return set(ref(db, 'persons/' + person.id), person);
+      return set(ref(db, 'names/' + person.id), person);
     },
     saveEvent: (event) => {
-      return set(ref(db, 'events/' + event.id), event);
+      return set(ref(db, 'event/' + event.id), event);
     },
     updateEvent: (event) => {
-      return set(ref(db, 'events/' + event.id), event);
+      return set(ref(db, 'event/' + event.id), event);
     },
     deleteEvent: (id) => {
-      return remove(ref(db, 'events/' + id));
+      return remove(ref(db, 'event/' + id));
     },
     loadPersons: async () => {
-      const snapshot = await get(child(ref(db), 'persons');
+      const snapshot = await get(child(ref(db), 'names');
       return snapshot.exists() ? Object.values(snapshot.val()) : [];
     },
     loadEvents: async () => {
-      const snapshot = await get(child(ref(db), 'events');
+      const snapshot = await get(child(ref(db), 'event');
       return snapshot.exists() ? Object.values(snapshot.val()) : [];
     }
   };
 </script>
-
 </body>
 </html>
