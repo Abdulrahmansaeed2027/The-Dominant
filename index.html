@@ -419,10 +419,19 @@
             let currentExportType = null;
             
             // تهيئة التطبيق
+            
             function initApp() {
-                firebaseDB.loadPersons().then(data => { persons = data; renderPersonSelect(); renderEvents(); });
-                firebaseDB.loadEvents().then(data => { events = data; renderEvents(); });
-            }
+  firebaseDB.loadPersons().then(data => {
+    persons = data;
+    renderPersonSelect();
+    return firebaseDB.loadEvents();
+  }).then(data => {
+    events = data;
+    renderEvents();
+  }).catch(error => {
+    console.error("Error loading data:", error);
+  });
+}
             
             // عرض الأحداث في الجدول
             function renderEvents(filterText = '') {
@@ -895,9 +904,8 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  // إعداد Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, push, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     databaseURL: "https://date-f5707-default-rtdb.firebaseio.com/"
@@ -906,7 +914,8 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  window.firebaseDB = {
+  // تعريف الكائن بشكل صحيح
+  const firebaseDB = {
     savePerson: (person) => {
       return set(ref(db, 'names/' + person.id), person);
     },
@@ -931,6 +940,10 @@
       return snapshot.exists() ? Object.values(snapshot.val()) : [];
     }
   };
+
+  // جعل الكائن متاحًا عالميًا
+  window.firebaseDB = firebaseDB;
 </script>
+
 </body>
 </html>
